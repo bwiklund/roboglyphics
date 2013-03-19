@@ -24,28 +24,31 @@ class Pen
     @maxLength = Number.POSITIVE_INFINITY
     @weight = 2
 
+    @onSetup?()
+
     @resetPoint()
+
+
+  angleFilter: ->
+    @angle
 
 
   resetPoint: ->
     @age = 0
     j+=10
     @pos = new Vec j,h#@canvas.width * Math.random(), @canvas.height * Math.random()
-    if j > @canvas.width
-      j = j%@canvas.width
+    if j > @canvas.width - 100
+      j = j%(@canvas.width - 100)
       h+=40
     @changeDirection()
 
 
   changeDirection: ->
     # #pube mode
-    # angle  = Math.random() * Math.PI * 2
-    # dAngle = 0.5*(Math.random() - 0.5)
-    # ddAngle = 0.01*(Math.random() - 0.5)
-    # changeDirectionChance = 0.01
+
     @angle = Math.random() * Math.PI * 2
-    @dAngle = 0.1*(Math.random() - 0.5)
-    #@ddAngle = 0.1*(Math.random() - 0.5)
+    @dAngle = 0.01*(Math.random() - 0.5)
+    @ddAngle = 0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.001
     @dampDAngle = 1
     @dampDDAngle = 1
@@ -54,6 +57,7 @@ class Pen
 
 
   step: ->
+    @onStep?()
 
     if @age > @maxLength
       @resetPoint()
@@ -66,8 +70,8 @@ class Pen
       @resetPoint()
       
     @age++
-    @pos.x += 0.1*Math.cos @angle
-    @pos.y += 0.1*Math.sin @angle
+    @pos.x += 0.1*Math.cos @angleFilter()
+    @pos.y += 0.1*Math.sin @angleFilter()
 
     @dAngle += @ddAngle
     @angle += @dAngle
@@ -83,12 +87,118 @@ class Pen
 #   data[3] > 100
 
 
+class Roboglypics extends Pen
+  angleFilter: ->
+    mult = Math.PI/3
+    Math.round(@angle/mult)*mult
+
+
+class Loopy extends Pen
+  changeDirection: ->
+    @angle = Math.random() * Math.PI * 2
+    @dAngle = 0.01*(Math.random() - 0.5)
+    @ddAngle = 0.001*(Math.random() - 0.5)
+    @changeDirectionChance = 0.001
+    @dampDAngle = 1
+    @dampDDAngle = 1
+    @maxLength = 200 + Math.random()*100
+
+
+class Giraffes extends Pen
+  changeDirection: ->
+    @angle = -Math.PI/2#Math.random() * Math.PI * 2
+    @dAngle = 0.01*(Math.random() - 0.5)
+    @ddAngle = 0.001*(Math.random() - 0.5)
+    @changeDirectionChance = 0.005
+    @dampDAngle = 1
+    @dampDDAngle = 1
+    @maxLength = 200 + Math.random()*100
+
+
+class Leonardo extends Pen
+  changeDirection: ->
+    @angle = Math.random() * Math.PI * 2
+    @dAngle = 0.02*(Math.random() - 0.5)
+    @ddAngle = 0.01*(Math.random() - 0.5)
+    @changeDirectionChance = 0.008
+    @dampDAngle = 0.99
+    @dampDDAngle = 0.99
+    @maxLength = 200 + Math.random()*600
+
+
+class Fantasy extends Pen
+  changeDirection: ->
+    @angle = Math.random() * Math.PI * 2
+    @dAngle = 0.005 + 0.06*Math.random()
+    @ddAngle = 0#0.001*(Math.random() - 0.5)
+    @changeDirectionChance = 0#0.008
+    @dampDAngle = 1
+    @dampDDAngle = 1
+    @maxLength = 200 + Math.random()*600
+
+
+class Clef extends Pen
+  angleFilter: ->
+    Math.PI * 2 * Math.sin @angle * 100
+
+  onStep: ->
+    @weight = @age / @maxLength
+
+  changeDirection: ->
+    @angle = Math.random() * Math.PI * 2
+    @dAngle = 0.001*(Math.random() - 0.5)
+    @ddAngle = 0#0.001*(Math.random() - 0.5)
+    @changeDirectionChance = 0.001
+    @dampDAngle = 1
+    @dampDDAngle = 1
+    @maxLength = 500 + Math.random()*600
+
+
+class BassClef extends Pen
+  angleFilter: ->
+    Math.PI * 2 * Math.sin @angle * 100
+
+  onStep: ->
+    @weight = 2*(1 - @age / @maxLength)
+
+  changeDirection: ->
+    @angle = Math.random() * Math.PI * 2
+    @dAngle = 0.001*(Math.random() - 0.5)
+    @ddAngle = 0#0.001*(Math.random() - 0.5)
+    @changeDirectionChance = 0.001
+    @dampDAngle = 1
+    @dampDDAngle = 1
+    @maxLength = 500 + Math.random()*600
+
+
+class BassProfundoClef extends Pen
+  angleFilter: ->
+    Math.PI * 2 * Math.sin @angle * 100
+
+  onStep: ->
+    @weight = 2*(1 - @age / @maxLength)
+    if @age % 200 < 100
+      @weight = 0
+
+  changeDirection: ->
+    @angle = Math.random() * Math.PI * 2
+    @dAngle = 0.001*(Math.random() - 0.5)
+    @ddAngle = 0#0.001*(Math.random() - 0.5)
+    @changeDirectionChance = 0.001
+    @dampDAngle = 1
+    @dampDDAngle = 1
+    @maxLength = 500 + Math.random()*600
+
+    
+    
+    
+
 
 pen = null
 
 framework = cq().framework
   onRender: ->
-    pen ?= new Pen @canvas
+    pen ?= new BassClef @canvas
 
     @.fillStyle 'rgba(0,0,0,0.9)'
 
