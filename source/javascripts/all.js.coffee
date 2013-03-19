@@ -24,7 +24,7 @@ maxLength = Number.POSITIVE_INFINITY
 weight = 2
 
 j = 0
-h = 100
+h = 50
 resetPoint = ->
   age = 0
   j+=10
@@ -43,10 +43,11 @@ changeDirection = ->
   angle = Math.random() * Math.PI * 2
   dAngle = 0.1*(Math.random() - 0.5)
   ddAngle = 0
-  changeDirectionChance = 0.03
+  changeDirectionChance = 0.001
   dampDAngle = 1
-  dampDDAngle = 1
-  maxLength = 200 + Math.random()*1000
+  dampDDAngle = 0
+  if Math.random() < 0.1 then angle = dAngle = 0
+  maxLength = 200 + Math.random()*100
 
 checkPixel = (x,y) ->
   data = @context.getImageData(x, y, 1, 1).data
@@ -60,7 +61,7 @@ framework = cq().framework
 
     @.fillStyle 'rgba(0,0,0,0.9)'
 
-    for i in [0..100]
+    for i in [0..500]
       age++
       pos.x += 0.1*Math.cos angle
       pos.y += 0.1*Math.sin angle
