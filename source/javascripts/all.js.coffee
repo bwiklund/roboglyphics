@@ -21,16 +21,17 @@ dampDDAngle = 0.9
 changeDirectionChance = 0
 noOverlap = false
 maxLength = Number.POSITIVE_INFINITY
+weight = 2
 
 j = 0
 h = 100
 resetPoint = ->
   age = 0
-  j+=20
+  j+=10
   pos = new Vec j,h#@canvas.width * Math.random(), @canvas.height * Math.random()
   if j > @canvas.width
     j = j%@canvas.width
-    h+=100
+    h+=40
   changeDirection()
 
 changeDirection = ->
@@ -45,7 +46,7 @@ changeDirection = ->
   changeDirectionChance = 0.03
   dampDAngle = 1
   dampDDAngle = 1
-  maxLength = 200
+  maxLength = 200 + Math.random()*1000
 
 checkPixel = (x,y) ->
   data = @context.getImageData(x, y, 1, 1).data
@@ -61,8 +62,8 @@ framework = cq().framework
 
     for i in [0..100]
       age++
-      pos.x += 0.3*Math.cos angle
-      pos.y += 0.3*Math.sin angle
+      pos.x += 0.1*Math.cos angle
+      pos.y += 0.1*Math.sin angle
 
       dAngle += ddAngle
       angle += dAngle
@@ -76,7 +77,7 @@ framework = cq().framework
       @.save()
       @.translate pos.x, pos.y
       @.beginPath()
-      @.arc 0,0,3,2,0,Math.PI*2,true
+      @.arc 0,0,3,weight,0,Math.PI*2,true
       @.fill()
       @.restore()
 
