@@ -165,6 +165,9 @@ MODE class Clef extends Pen
 
 
 MODE class BassClef extends Pen
+  onSetup: ->
+    @scale = 2
+
   angleFilter: ->
     Math.PI * 2 * Math.sin @angle * 100
 
@@ -182,13 +185,16 @@ MODE class BassClef extends Pen
 
 
 MODE class Stacatto extends Pen
+  onSetup: ->
+    @scale = 2.5
+
   angleFilter: ->
     Math.PI * 2 * Math.sin @angle * 100
 
   onStep: ->
     @weight = 2*(1 - @age / @maxLength)
     if @age % 200 < 100
-      @weight = 0
+      @weight = 0.5
 
   changeDirection: ->
     @angle = randAngle()
