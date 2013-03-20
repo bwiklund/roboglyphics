@@ -1,0 +1,65 @@
+/* line 1, all.css.sass */
+body {
+  background: #eeeeee;
+  color: #555555;
+  box-sizing: border-box;
+  font-family: Helvetica, sans-serif; }
+
+/* line 7, all.css.sass */
+* {
+  margin: 0;
+  padding: 0; }
+
+/* line 11, all.css.sass */
+p, h1, h2, h3, label {
+  text-align: center;
+  font-weight: normal;
+  margin: 20px;
+  color: #888888; }
+
+/* line 19, all.css.sass */
+h1 {
+  font-family: "Raleway", sans-serif;
+  font-size: 200%; }
+
+/* line 23, all.css.sass */
+h2 {
+  font-size: 100%; }
+
+/* line 26, all.css.sass */
+h3 {
+  font-size: 100%; }
+
+/* line 31, all.css.sass */
+.question {
+  margin: 40px 0; }
+  /* line 33, all.css.sass */
+  .question h2 {
+    color: #333333;
+    margin: 10px; }
+  /* line 36, all.css.sass */
+  .question p {
+    margin: 10px auto;
+    color: #666666;
+    padding: 0 20px;
+    max-width: 350px; }
+
+/* line 42, all.css.sass */
+a {
+  color: inherit; }
+  /* line 44, all.css.sass */
+  a:hover {
+    color: black; }
+
+/* line 48, all.css.sass */
+.controls {
+  margin: 20px; }
+  /* line 51, all.css.sass */
+  .controls label {
+    font-size: 75%;
+    display: block;
+    margin: 10px 0; }
+    /* line 55, all.css.sass */
+    .controls label select, .controls label input {
+      display: block;
+      margin: 5px auto; }
