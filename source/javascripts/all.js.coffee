@@ -90,11 +90,52 @@ class Pen
 
 
 
+class Roboglypics
+  constructor: (@canvasEl, @settings) ->
+
+    @speed = 100
+
+    @pen = null
+
+    @a = canvasEl.getContext('2d')
+    @canvasEl.width = @canvasEl.offsetWidth
+    @canvasEl.height = @canvasEl.offsetHeight
+
+    window.requestAnimationFrame @onRender
+
+  onRender: =>
+    
+    @a.fillStyle = 'black'#$scope.color#'rgba(0,0,0,0.9)'
+
+    if @settings.currentMode
+      for i in [0..@settings.speed]
+
+        # reset if the control panel has changed something
+        if !@pen?
+          @a.clearRect(0,0,@canvasEl.width,@canvasEl.height)
+          @pen ?= new @settings.currentMode @canvasEl
+
+        @pen.step()
+        return if @pen.done
+        
+        @a.save()
+        @a.translate @pen.pos.x, @pen.pos.y
+        @a.beginPath()
+        @a.arc 0,0,3,@pen.weight * @pen.scale,0,Math.PI*2,true
+        @a.fill()
+        @a.restore()
+
+      window.requestAnimationFrame @onRender
+
+
+
+
+
 modes = []
 MODE = (klass) -> modes.push klass
 
 
-MODE class Roboglypics extends Pen
+MODE class Roboglyph extends Pen
   angleFilter: ->
     mult = Math.PI/3
     Math.round(@angle/mult)*mult
@@ -236,38 +277,12 @@ MODE class Madman extends Pen
 app = angular.module 'demoControls', [], ->
 
 app.controller 'MainCtrl', ($scope) ->
-  $scope.modes = modes
-  $scope.currentMode = Clef
-  $scope.speed = 100
+  $scope.settings =
+    modes: modes
+    currentMode: Clef
+    speed: 100
 
-  # bootstrap out thing
-  pen = null
-  running = true
-
-  framework = cq().framework
-    onRender: ->
-      
-      @.fillStyle $scope.color#'rgba(0,0,0,0.9)'
-
-      for i in [0..$scope.speed]
-
-        # reset if the control panel has changed something
-        if !pen?
-          @clear()
-          pen ?= new $scope.currentMode @canvas
-
-        pen.step()
-        return if pen.done
-        
-        @.save()
-        @.translate pen.pos.x, pen.pos.y
-        @.beginPath()
-        @.arc 0,0,3,pen.weight * pen.scale,0,Math.PI*2,true
-        @.fill()
-        @.restore()
-
-  framework.appendTo('.demoCanvas')
-
+  roboglyphics = new Roboglypics document.getElementsByTagName('canvas')[0], $scope.settings
 
   $scope.$watch 'currentMode', (nval) ->
     pen = null #the render loop will pick up the actual value next time around
