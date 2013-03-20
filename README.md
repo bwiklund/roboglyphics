@@ -1,8 +1,6 @@
-floormat
+![Sample](https://raw.github.com/bwiklund/roboglyphics/master/site/sample.png)
+
+roboglyphics
 ========
 
-An empty middleman project, set up with my favorites. Saves five minutes of setup.
-
-- Coffeescript
-- Slim
-- Sass
+A library for creating procedural handwriting
