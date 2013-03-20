@@ -8,7 +8,7 @@ h3
     select ng-model="currentMode" ng-options="mode as mode.name for mode in modes"
   label
     |Speed:
-    input type="range" min="1" max="2000" ng-model="speed"
+    input type="range" min="1" max="500" ng-model="speed"
   /pre {{currentMode.prototype.changeDirection.toString()}}
   /label
   /  |Color:

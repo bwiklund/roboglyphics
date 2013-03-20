@@ -238,7 +238,7 @@ app = angular.module 'demoControls', [], ->
 app.controller 'MainCtrl', ($scope) ->
   $scope.modes = modes
   $scope.currentMode = Clef
-  $scope.speed = 400
+  $scope.speed = 100
 
   # bootstrap out thing
   pen = null
