@@ -195,6 +195,25 @@ MODE class Stacatto extends Pen
     @dampDDAngle = 1
     @maxLength = 500 + Math.random()*600
 
+
+MODE class Madman extends Pen
+  angleFilter: ->
+    if @age % 70 < 60
+      Math.PI * 2 * Math.cos @angle
+    else
+      rand()*Math.PI
+
+  changeDirection: ->
+    @weight = Math.random()
+    @angle = randAngle()
+    @dAngle = 0.005*rand()
+    @ddAngle = 0.001*rand()
+    @changeDirectionChance = 0.1
+    @dampDAngle = 0.9
+    @dampDDAngle = 0.9
+    @maxLength = 500 + Math.random()*600
+
+
     
     
     
@@ -209,7 +228,7 @@ app = angular.module 'demoControls', [], ->
 app.controller 'MainCtrl', ($scope) ->
   $scope.modes = modes
   $scope.currentMode = Clef
-  
+  $scope.speed = 400
 
   # bootstrap out thing
   pen = null
@@ -220,7 +239,7 @@ app.controller 'MainCtrl', ($scope) ->
       
       @.fillStyle $scope.color#'rgba(0,0,0,0.9)'
 
-      for i in [0..500]
+      for i in [0..$scope.speed]
 
         # reset if the control panel has changed something
         if !pen?
@@ -237,7 +256,7 @@ app.controller 'MainCtrl', ($scope) ->
         @.fill()
         @.restore()
 
-  framework.appendTo('body')
+  framework.appendTo('.demoCanvas')
 
 
   $scope.$watch 'currentMode', (nval) ->
