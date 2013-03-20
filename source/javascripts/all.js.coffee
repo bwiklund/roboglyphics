@@ -1,5 +1,7 @@
 # hello
 
+randAngle = ->
+  Math.random() * Math.PI * 2
 
 class Vec
   constructor: (@x=0,@y=0) ->
@@ -46,7 +48,7 @@ class Pen
   changeDirection: ->
     # #pube mode
 
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.01*(Math.random() - 0.5)
     @ddAngle = 0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.001
@@ -95,7 +97,7 @@ class Roboglypics extends Pen
 
 class Loopy extends Pen
   changeDirection: ->
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.01*(Math.random() - 0.5)
     @ddAngle = 0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.001
@@ -106,7 +108,7 @@ class Loopy extends Pen
 
 class Giraffes extends Pen
   changeDirection: ->
-    @angle = -Math.PI/2#Math.random() * Math.PI * 2
+    @angle = -Math.PI/2#randAngle()
     @dAngle = 0.01*(Math.random() - 0.5)
     @ddAngle = 0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.005
@@ -117,7 +119,7 @@ class Giraffes extends Pen
 
 class Leonardo extends Pen
   changeDirection: ->
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.02*(Math.random() - 0.5)
     @ddAngle = 0.01*(Math.random() - 0.5)
     @changeDirectionChance = 0.008
@@ -128,7 +130,7 @@ class Leonardo extends Pen
 
 class Fantasy extends Pen
   changeDirection: ->
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.005 + 0.06*Math.random()
     @ddAngle = 0#0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0#0.008
@@ -145,7 +147,7 @@ class Clef extends Pen
     @weight = @age / @maxLength
 
   changeDirection: ->
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.001*(Math.random() - 0.5)
     @ddAngle = 0#0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.001
@@ -162,7 +164,7 @@ class BassClef extends Pen
     @weight = 2*(1 - @age / @maxLength)
 
   changeDirection: ->
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.001*(Math.random() - 0.5)
     @ddAngle = 0#0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.001
@@ -181,7 +183,7 @@ class BassProfundoClef extends Pen
       @weight = 0
 
   changeDirection: ->
-    @angle = Math.random() * Math.PI * 2
+    @angle = randAngle()
     @dAngle = 0.001*(Math.random() - 0.5)
     @ddAngle = 0#0.001*(Math.random() - 0.5)
     @changeDirectionChance = 0.001
@@ -198,7 +200,7 @@ pen = null
 
 framework = cq().framework
   onRender: ->
-    pen ?= new BassClef @canvas
+    pen ?= new Clef @canvas
 
     @.fillStyle 'rgba(0,0,0,0.9)'
 
@@ -207,6 +209,7 @@ framework = cq().framework
       pen.step()
 
       @.save()
+      @.scale(3,3)
       @.translate pen.pos.x, pen.pos.y
       @.beginPath()
       @.arc 0,0,3,pen.weight,0,Math.PI*2,true
