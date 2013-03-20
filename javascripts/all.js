@@ -1,5 +1,6 @@
 (function() {
-  var BassClef, Clef, Fantasy, Giraffes, Leonardo, Loopy, MODE, Madman, Pen, Roboglypics, Stacatto, Vec, app, modes, rand, randAngle,
+  var BassClef, Clef, Fantasy, Giraffes, Leonardo, Loopy, MODE, Madman, Pen, Roboglyph, Roboglypics, Stacatto, Vec, app, modes, rand, randAngle,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -114,27 +115,72 @@
 
   })();
 
+  Roboglypics = (function() {
+
+    function Roboglypics(canvasEl, settings) {
+      this.canvasEl = canvasEl;
+      this.settings = settings;
+      this.onRender = __bind(this.onRender, this);
+
+      this.speed = 100;
+      this.pen = null;
+      this.a = canvasEl.getContext('2d');
+      this.canvasEl.width = this.canvasEl.offsetWidth;
+      this.canvasEl.height = this.canvasEl.offsetHeight;
+      window.requestAnimationFrame(this.onRender);
+    }
+
+    Roboglypics.prototype.onRender = function() {
+      var i, _i, _ref, _ref1;
+      this.a.fillStyle = 'black';
+      if (this.settings.currentMode) {
+        for (i = _i = 0, _ref = this.settings.speed; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          if (!(this.pen != null)) {
+            this.a.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+            if ((_ref1 = this.pen) == null) {
+              this.pen = new this.settings.currentMode(this.canvasEl);
+            }
+          }
+          this.pen.step();
+          if (this.pen.done) {
+            return;
+          }
+          this.a.save();
+          this.a.translate(this.pen.pos.x, this.pen.pos.y);
+          this.a.beginPath();
+          this.a.arc(0, 0, 3, this.pen.weight * this.pen.scale, 0, Math.PI * 2, true);
+          this.a.fill();
+          this.a.restore();
+        }
+        return window.requestAnimationFrame(this.onRender);
+      }
+    };
+
+    return Roboglypics;
+
+  })();
+
   modes = [];
 
   MODE = function(klass) {
     return modes.push(klass);
   };
 
-  MODE(Roboglypics = (function(_super) {
+  MODE(Roboglyph = (function(_super) {
 
-    __extends(Roboglypics, _super);
+    __extends(Roboglyph, _super);
 
-    function Roboglypics() {
-      return Roboglypics.__super__.constructor.apply(this, arguments);
+    function Roboglyph() {
+      return Roboglyph.__super__.constructor.apply(this, arguments);
     }
 
-    Roboglypics.prototype.angleFilter = function() {
+    Roboglyph.prototype.angleFilter = function() {
       var mult;
       mult = Math.PI / 3;
       return Math.round(this.angle / mult) * mult;
     };
 
-    return Roboglypics;
+    return Roboglyph;
 
   })(Pen));
 
@@ -365,39 +411,15 @@
   app = angular.module('demoControls', [], function() {});
 
   app.controller('MainCtrl', function($scope) {
-    var framework, pen, running;
-    $scope.modes = modes;
-    $scope.currentMode = Clef;
-    $scope.speed = 100;
-    pen = null;
-    running = true;
-    framework = cq().framework({
-      onRender: function() {
-        var i, _i, _ref;
-        this.fillStyle($scope.color);
-        for (i = _i = 0, _ref = $scope.speed; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
-          if (!(pen != null)) {
-            this.clear();
-            if (pen == null) {
-              pen = new $scope.currentMode(this.canvas);
-            }
-          }
-          pen.step();
-          if (pen.done) {
-            return;
-          }
-          this.save();
-          this.translate(pen.pos.x, pen.pos.y);
-          this.beginPath();
-          this.arc(0, 0, 3, pen.weight * pen.scale, 0, Math.PI * 2, true);
-          this.fill();
-          this.restore();
-        }
-      }
-    });
-    framework.appendTo('.demoCanvas');
-    return $scope.$watch('currentMode', function(nval) {
-      return pen = null;
+    var roboglyphics;
+    $scope.settings = {
+      modes: modes,
+      currentMode: Clef,
+      speed: 100
+    };
+    roboglyphics = new Roboglypics(document.getElementsByTagName('canvas')[0], $scope.settings);
+    return $scope.$watch('settings.currentMode', function(nval) {
+      return roboglyphics.pen = null;
     });
   });
 
