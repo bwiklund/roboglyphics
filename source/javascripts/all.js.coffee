@@ -1,7 +1,10 @@
 # hello
 
+# some utility functions
 randAngle = ->
   Math.random() * Math.PI * 2
+
+
 
 class Vec
   constructor: (@x=0,@y=0) ->
@@ -9,41 +12,46 @@ class Vec
     @x+=o.x
     @y+=o.y
 
-j = 0
-h = 50
 
 class Pen 
   constructor: (@canvas) ->
+    @initDefaults()
+    @onSetup?()
+    @resetPoint()
 
+  initDefaults: ->
     @age = 0
     @angle = 0
     @dAngle = 0
     @ddAngle = 0
-    @dampDAngle = 0.99
-    @dampDDAngle = 0.9
+    @dampDAngle = 1
+    @dampDDAngle = 1
     @changeDirectionChance = 0
-    @noOverlap = false
     @maxLength = Number.POSITIVE_INFINITY
     @weight = 2
 
-    @onSetup?()
-
-    @resetPoint()
-
+    @margin = 200
+    @lineHeight = 40
+    @letterSpacing = 10
+    @baseX = @margin
+    @baseY = @margin
 
   angleFilter: ->
     @angle
 
-
   resetPoint: ->
     @age = 0
-    j+=10
-    @pos = new Vec j,h#@canvas.width * Math.random(), @canvas.height * Math.random()
-    if j > @canvas.width - 100
-      j = j%(@canvas.width - 100)
-      h+=40
+
+    @pos = new Vec @baseX, @baseY
+
+    @newLineIfNeeded()
     @changeDirection()
 
+  newLineIfNeeded: ->
+    @baseX += @letterSpacing
+    if @baseX > @canvas.width - @margin
+      @baseX = @margin
+      @baseY += @lineHeight
 
   changeDirection: ->
     # #pube mode
@@ -209,7 +217,6 @@ framework = cq().framework
       pen.step()
 
       @.save()
-      @.scale(3,3)
       @.translate pen.pos.x, pen.pos.y
       @.beginPath()
       @.arc 0,0,3,pen.weight,0,Math.PI*2,true
