@@ -39,6 +39,7 @@
     }
 
     Pen.prototype.initDefaults = function() {
+      this.scale = 1;
       this.age = 0;
       this.angle = 0;
       this.dAngle = 0;
@@ -49,7 +50,7 @@
       this.maxLength = Number.POSITIVE_INFINITY;
       this.weight = 2;
       this.margin = Math.min(100, 0.1 * this.canvas.width);
-      this.lineHeight = 40;
+      this.lineHeight = 30;
       this.letterSpacing = 10;
       this.baseX = Number.POSITIVE_INFINITY;
       return this.baseY = this.margin - this.lineHeight;
@@ -67,10 +68,10 @@
     };
 
     Pen.prototype.newLineIfNeeded = function() {
-      this.baseX += this.letterSpacing;
+      this.baseX += this.letterSpacing * this.scale;
       if (this.baseX > this.canvas.width - this.margin) {
         this.baseX = this.margin;
-        this.baseY += this.lineHeight;
+        this.baseY += this.lineHeight * this.scale;
       }
       if (this.baseY > this.canvas.height - this.margin) {
         return this.done = true;
@@ -98,8 +99,8 @@
         this.resetPoint();
       }
       this.age++;
-      this.pos.x += 0.1 * Math.cos(this.angleFilter());
-      this.pos.y += 0.1 * Math.sin(this.angleFilter());
+      this.pos.x += this.scale * 0.1 * Math.cos(this.angleFilter());
+      this.pos.y += this.scale * 0.1 * Math.sin(this.angleFilter());
       this.dAngle += this.ddAngle;
       this.angle += this.dAngle;
       this.dAngle *= this.dampDAngle;
@@ -232,6 +233,10 @@
     function Clef() {
       return Clef.__super__.constructor.apply(this, arguments);
     }
+
+    Clef.prototype.onSetup = function() {
+      return this.scale = 2;
+    };
 
     Clef.prototype.angleFilter = function() {
       return Math.PI * 2 * Math.sin(this.angle * 100);
@@ -376,7 +381,7 @@
           this.save();
           this.translate(pen.pos.x, pen.pos.y);
           this.beginPath();
-          this.arc(0, 0, 3, pen.weight, 0, Math.PI * 2, true);
+          this.arc(0, 0, 3, pen.weight * pen.scale, 0, Math.PI * 2, true);
           this.fill();
           this.restore();
         }
