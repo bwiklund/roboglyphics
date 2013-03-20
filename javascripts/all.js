@@ -368,7 +368,7 @@
     var framework, pen, running;
     $scope.modes = modes;
     $scope.currentMode = Clef;
-    $scope.speed = 400;
+    $scope.speed = 100;
     pen = null;
     running = true;
     framework = cq().framework({
