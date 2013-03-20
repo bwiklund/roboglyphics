@@ -21,6 +21,7 @@ class Pen
     @resetPoint()
 
   initDefaults: ->
+    @scale = 1
     @age = 0
     @angle = 0
     @dAngle = 0
@@ -32,7 +33,7 @@ class Pen
     @weight = 2
 
     @margin = Math.min 100, 0.1 * @canvas.width
-    @lineHeight = 40
+    @lineHeight = 30
     @letterSpacing = 10
     @baseX = Number.POSITIVE_INFINITY
     @baseY = @margin-@lineHeight
@@ -48,10 +49,10 @@ class Pen
     @changeDirection()
 
   newLineIfNeeded: ->
-    @baseX += @letterSpacing
+    @baseX += @letterSpacing * @scale
     if @baseX > @canvas.width - @margin
       @baseX = @margin
-      @baseY += @lineHeight
+      @baseY += @lineHeight * @scale
     if @baseY > @canvas.height - @margin
       @done = true
 
@@ -75,8 +76,8 @@ class Pen
       @resetPoint()
       
     @age++
-    @pos.x += 0.1*Math.cos @angleFilter()
-    @pos.y += 0.1*Math.sin @angleFilter()
+    @pos.x += @scale*0.1*Math.cos @angleFilter()
+    @pos.y += @scale*0.1*Math.sin @angleFilter()
 
     @dAngle += @ddAngle
     @angle += @dAngle
@@ -144,6 +145,9 @@ MODE class Fantasy extends Pen
 
 
 MODE class Clef extends Pen
+  onSetup: ->
+    @scale = 2
+
   angleFilter: ->
     Math.PI * 2 * Math.sin @angle * 100
 
@@ -252,7 +256,7 @@ app.controller 'MainCtrl', ($scope) ->
         @.save()
         @.translate pen.pos.x, pen.pos.y
         @.beginPath()
-        @.arc 0,0,3,pen.weight,0,Math.PI*2,true
+        @.arc 0,0,3,pen.weight * pen.scale,0,Math.PI*2,true
         @.fill()
         @.restore()
 
