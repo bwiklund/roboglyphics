@@ -268,6 +268,10 @@
       return BassClef.__super__.constructor.apply(this, arguments);
     }
 
+    BassClef.prototype.onSetup = function() {
+      return this.scale = 2;
+    };
+
     BassClef.prototype.angleFilter = function() {
       return Math.PI * 2 * Math.sin(this.angle * 100);
     };
@@ -298,6 +302,10 @@
       return Stacatto.__super__.constructor.apply(this, arguments);
     }
 
+    Stacatto.prototype.onSetup = function() {
+      return this.scale = 2.5;
+    };
+
     Stacatto.prototype.angleFilter = function() {
       return Math.PI * 2 * Math.sin(this.angle * 100);
     };
@@ -305,7 +313,7 @@
     Stacatto.prototype.onStep = function() {
       this.weight = 2 * (1 - this.age / this.maxLength);
       if (this.age % 200 < 100) {
-        return this.weight = 0;
+        return this.weight = 0.5;
       }
     };
 
