@@ -31,11 +31,11 @@ class Pen
     @maxLength = Number.POSITIVE_INFINITY
     @weight = 2
 
-    @margin = 0.2 * @canvas.width
+    @margin = Math.min 100, 0.1 * @canvas.width
     @lineHeight = 40
     @letterSpacing = 10
-    @baseX = @margin
-    @baseY = @margin
+    @baseX = Number.POSITIVE_INFINITY
+    @baseY = @margin-@lineHeight
 
   angleFilter: ->
     @angle
@@ -71,10 +71,6 @@ class Pen
     if @age > @maxLength
       @resetPoint()
 
-    # if noOverlap
-    #   if checkPixel.call this, pos.x, pos.y
-    #     resetPoint.call this
-
     if @pos.x < 0 || @pos.y < 0 || @pos.x > @canvas.width || @pos.y > @canvas.height
       @resetPoint()
       
@@ -90,10 +86,6 @@ class Pen
 
     if Math.random() < @changeDirectionChance
       @changeDirection()
-
-# checkPixel = (x,y) ->
-#   data = @context.getImageData(x, y, 1, 1).data
-#   data[3] > 100
 
 
 
@@ -226,7 +218,7 @@ app.controller 'MainCtrl', ($scope) ->
   framework = cq().framework
     onRender: ->
       
-      @.fillStyle 'rgba(0,0,0,0.9)'
+      @.fillStyle $scope.color#'rgba(0,0,0,0.9)'
 
       for i in [0..500]
 

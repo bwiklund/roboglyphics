@@ -8,8 +8,21 @@ body
   margin: 0
   padding: 0
 
-h1,h2
+h1,h2,h3,label
+  text-align: center
   margin: 20px
+
+h2
+  font-size: 100%
+
+h3
+  font-size: 100%
+
+
+a
+  color: inherit
+  &:hover
+    color: black
 
 
 .controls
@@ -17,8 +30,8 @@ h1,h2
 
   label
     font-size: 75%
-    display: inline-block
-    width: 200px
+    display: block
+    margin: 10px 0
     select, input
       display: block
-      margin-top: 5px
+      margin: 5px auto

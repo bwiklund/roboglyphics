@@ -1,6 +1,12 @@
 h1 roboglyphics
 h2 a procedural handwriting library
+h3
+  a href="https://github.com/bwiklund/roboglyphics" on github
 .controls ng-app="demoControls" ng-controller="MainCtrl"
   label
     |Handwriting mode:
     select ng-model="currentMode" ng-options="mode as mode.name for mode in modes"
+  /pre {{currentMode.prototype.changeDirection.toString()}}
+  /label
+  /  |Color:
+  /  input ng-model="color" type="color"
