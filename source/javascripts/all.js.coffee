@@ -265,11 +265,6 @@ MODE class Madman extends Pen
     @maxLength = 500 + Math.random()*600
 
 
-    
-    
-    
-
-
 
   
 
@@ -284,5 +279,10 @@ app.controller 'MainCtrl', ($scope) ->
 
   roboglyphics = new Roboglypics document.getElementsByTagName('canvas')[0], $scope.settings
 
-  $scope.$watch 'currentMode', (nval) ->
-    pen = null #the render loop will pick up the actual value next time around
+  $scope.$watch 'settings.currentMode', (nval) ->
+    roboglyphics.pen = null #the render loop will pick up the actual value next time around
+
+
+
+
+
