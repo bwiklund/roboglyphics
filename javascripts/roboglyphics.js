@@ -1,1 +1,172 @@
-(function(){var e,t,n,r=function(e,t){return function(){return e.apply(t,arguments)}};n=function(){function e(e,t){this.x=e!=null?e:0,this.y=t!=null?t:0}return e.prototype.add=function(e){return this.x+=e.x,this.y+=e.y},e}(),e=function(){function e(e){this.canvas=e,this.initDefaults(),typeof this.onSetup=="function"&&this.onSetup(),this.resetPoint()}return e.prototype.randAngle=function(){return Math.random()*Math.PI*2},e.prototype.rand=function(){return(Math.random()-.5)*2},e.prototype.initDefaults=function(){return this.scale=1,this.age=0,this.angle=0,this.dAngle=0,this.ddAngle=0,this.dampDAngle=1,this.dampDDAngle=1,this.changeDirectionChance=0,this.maxLength=Number.POSITIVE_INFINITY,this.weight=2,this.margin=Math.min(100,.1*this.canvas.width),this.lineHeight=30,this.letterSpacing=10,this.baseX=Number.POSITIVE_INFINITY,this.baseY=this.margin-this.lineHeight},e.prototype.angleFilter=function(){return this.angle},e.prototype.resetPoint=function(){return this.age=0,this.pos=new n(this.baseX,this.baseY),this.newLineIfNeeded(),this.changeDirection()},e.prototype.newLineIfNeeded=function(){this.baseX+=this.letterSpacing*this.scale,this.baseX>this.canvas.width-this.margin&&(this.baseX=this.margin,this.baseY+=this.lineHeight*this.scale);if(this.baseY>this.canvas.height-this.margin)return this.done=!0},e.prototype.changeDirection=function(){return this.angle=randAngle(),this.dAngle=.005*this.rand(),this.ddAngle=5e-4*this.rand(),this.changeDirectionChance=.001,this.dampDAngle=1,this.dampDDAngle=1,this.maxLength=200+Math.random()*100},e.prototype.step=function(){typeof this.onStep=="function"&&this.onStep(),this.age>this.maxLength&&this.resetPoint(),(this.pos.x<0||this.pos.y<0||this.pos.x>this.canvas.width||this.pos.y>this.canvas.height)&&this.resetPoint(),this.age++,this.pos.x+=this.scale*.1*Math.cos(this.angleFilter()),this.pos.y+=this.scale*.1*Math.sin(this.angleFilter()),this.dAngle+=this.ddAngle,this.angle+=this.dAngle,this.dAngle*=this.dampDAngle,this.ddAngle*=this.dampDDAngle;if(Math.random()<this.changeDirectionChance)return this.changeDirection()},e}(),t=function(){function e(e,t){this.canvasEl=e,this.settings=t,this.onRender=r(this.onRender,this),this.speed=100,this.pen=null,this.a=e.getContext("2d"),this.canvasEl.width=this.canvasEl.offsetWidth,this.canvasEl.height=this.canvasEl.offsetHeight,window.requestAnimationFrame(this.onRender)}return e.prototype.onRender=function(){var e,t,n,r;this.a.fillStyle="black";if(this.settings.currentMode){for(e=t=0,n=this.settings.speed;0<=n?t<=n:t>=n;e=0<=n?++t:--t){this.pen==null&&(this.a.clearRect(0,0,this.canvasEl.width,this.canvasEl.height),(r=this.pen)==null&&(this.pen=new this.settings.currentMode(this.canvasEl))),this.pen.step();if(this.pen.done)return;this.a.save(),this.a.translate(this.pen.pos.x,this.pen.pos.y),this.a.beginPath(),this.a.arc(0,0,3,this.pen.weight*this.pen.scale,0,Math.PI*2,!0),this.a.fill(),this.a.restore()}return window.requestAnimationFrame(this.onRender)}},e}(),window.rg={Roboglypics:t,Pen:e,Vec:n}}).call(this);
+(function() {
+  var Pen, Roboglypics, Vec,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  Vec = (function() {
+
+    function Vec(x, y) {
+      this.x = x != null ? x : 0;
+      this.y = y != null ? y : 0;
+    }
+
+    Vec.prototype.add = function(o) {
+      this.x += o.x;
+      return this.y += o.y;
+    };
+
+    return Vec;
+
+  })();
+
+  Pen = (function() {
+
+    function Pen(canvas) {
+      this.canvas = canvas;
+      this.initDefaults();
+      if (typeof this.onSetup === "function") {
+        this.onSetup();
+      }
+      this.resetPoint();
+    }
+
+    Pen.prototype.randAngle = function() {
+      return Math.random() * Math.PI * 2;
+    };
+
+    Pen.prototype.rand = function() {
+      return (Math.random() - 0.5) * 2;
+    };
+
+    Pen.prototype.initDefaults = function() {
+      this.scale = 1;
+      this.age = 0;
+      this.angle = 0;
+      this.dAngle = 0;
+      this.ddAngle = 0;
+      this.dampDAngle = 1;
+      this.dampDDAngle = 1;
+      this.changeDirectionChance = 0;
+      this.maxLength = Number.POSITIVE_INFINITY;
+      this.weight = 2;
+      this.margin = Math.min(100, 0.1 * this.canvas.width);
+      this.lineHeight = 30;
+      this.letterSpacing = 10;
+      this.baseX = Number.POSITIVE_INFINITY;
+      return this.baseY = this.margin - this.lineHeight;
+    };
+
+    Pen.prototype.angleFilter = function() {
+      return this.angle;
+    };
+
+    Pen.prototype.resetPoint = function() {
+      this.age = 0;
+      this.pos = new Vec(this.baseX, this.baseY);
+      this.newLineIfNeeded();
+      return this.changeDirection();
+    };
+
+    Pen.prototype.newLineIfNeeded = function() {
+      this.baseX += this.letterSpacing * this.scale;
+      if (this.baseX > this.canvas.width - this.margin) {
+        this.baseX = this.margin;
+        this.baseY += this.lineHeight * this.scale;
+      }
+      if (this.baseY > this.canvas.height - this.margin) {
+        return this.done = true;
+      }
+    };
+
+    Pen.prototype.changeDirection = function() {
+      this.angle = this.randAngle();
+      this.dAngle = 0.005 * this.rand();
+      this.ddAngle = 0.0005 * this.rand();
+      this.changeDirectionChance = 0.001;
+      this.dampDAngle = 1;
+      this.dampDDAngle = 1;
+      return this.maxLength = 200 + Math.random() * 100;
+    };
+
+    Pen.prototype.step = function() {
+      if (typeof this.onStep === "function") {
+        this.onStep();
+      }
+      if (this.age > this.maxLength) {
+        this.resetPoint();
+      }
+      if (this.pos.x < 0 || this.pos.y < 0 || this.pos.x > this.canvas.width || this.pos.y > this.canvas.height) {
+        this.resetPoint();
+      }
+      this.age++;
+      this.pos.x += this.scale * 0.1 * Math.cos(this.angleFilter());
+      this.pos.y += this.scale * 0.1 * Math.sin(this.angleFilter());
+      this.dAngle += this.ddAngle;
+      this.angle += this.dAngle;
+      this.dAngle *= this.dampDAngle;
+      this.ddAngle *= this.dampDDAngle;
+      if (Math.random() < this.changeDirectionChance) {
+        return this.changeDirection();
+      }
+    };
+
+    Pen.prototype.draw = function(a) {
+      a.save();
+      a.translate(this.pos.x, this.pos.y);
+      a.beginPath();
+      a.arc(0, 0, 3, this.weight * this.scale, 0, Math.PI * 2, true);
+      a.fill();
+      return a.restore();
+    };
+
+    return Pen;
+
+  })();
+
+  Roboglypics = (function() {
+
+    function Roboglypics(canvasEl, settings) {
+      this.canvasEl = canvasEl;
+      this.settings = settings;
+      this.onRender = __bind(this.onRender, this);
+
+      this.pen = null;
+      this.a = canvasEl.getContext('2d');
+      this.canvasEl.width = this.canvasEl.offsetWidth;
+      this.canvasEl.height = this.canvasEl.offsetHeight;
+      window.requestAnimationFrame(this.onRender);
+    }
+
+    Roboglypics.prototype.reset = function() {
+      return this.a.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+    };
+
+    Roboglypics.prototype.setPen = function(penCtor) {
+      return this.pen = new penCtor(this.canvasEl);
+    };
+
+    Roboglypics.prototype.onRender = function() {
+      var i, _i, _ref;
+      this.a.fillStyle = 'black';
+      if (this.pen != null) {
+        for (i = _i = 0, _ref = this.settings.speed; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+          this.pen.step();
+          if (this.pen.done) {
+            break;
+          }
+          this.pen.draw(this.a);
+        }
+      }
+      return window.requestAnimationFrame(this.onRender);
+    };
+
+    return Roboglypics;
+
+  })();
+
+  window.rg = {
+    Roboglypics: Roboglypics,
+    Pen: Pen,
+    Vec: Vec
+  };
+
+}).call(this);
