@@ -1,7 +1,4 @@
-# hello
-
-# some utility functions
-
+# roboglyphics #
 
 class Vec
   constructor: (@x=0,@y=0) ->
@@ -59,7 +56,7 @@ class Pen
       @done = true
 
   changeDirection: ->
-    @angle = randAngle()
+    @angle = @randAngle()
     @dAngle = 0.005*@rand()
     @ddAngle = 0.0005*@rand()
     @changeDirectionChance = 0.001
@@ -90,44 +87,41 @@ class Pen
     if Math.random() < @changeDirectionChance
       @changeDirection()
 
+  draw: (a) ->
+    a.save()
+    a.translate @pos.x, @pos.y
+    a.beginPath()
+    a.arc 0,0,3,@weight * @scale,0,Math.PI*2,true
+    a.fill()
+    a.restore()
+
 
 
 class Roboglypics
   constructor: (@canvasEl, @settings) ->
-
-    @speed = 100
-
     @pen = null
-
     @a = canvasEl.getContext('2d')
     @canvasEl.width = @canvasEl.offsetWidth
     @canvasEl.height = @canvasEl.offsetHeight
-
     window.requestAnimationFrame @onRender
+
+  reset: ->
+    @a.clearRect(0,0,@canvasEl.width,@canvasEl.height)
+
+  setPen: (penCtor) ->
+    @pen = new penCtor @canvasEl
 
   onRender: =>
     
     @a.fillStyle = 'black'#$scope.color#'rgba(0,0,0,0.9)'
 
-    if @settings.currentMode
+    if @pen?
       for i in [0..@settings.speed]
-
-        # reset if the control panel has changed something
-        if !@pen?
-          @a.clearRect(0,0,@canvasEl.width,@canvasEl.height)
-          @pen ?= new @settings.currentMode @canvasEl
-
         @pen.step()
-        return if @pen.done
-        
-        @a.save()
-        @a.translate @pen.pos.x, @pen.pos.y
-        @a.beginPath()
-        @a.arc 0,0,3,@pen.weight * @pen.scale,0,Math.PI*2,true
-        @a.fill()
-        @a.restore()
+        break if @pen.done
+        @pen.draw @a
 
-      window.requestAnimationFrame @onRender
+    window.requestAnimationFrame @onRender
 
 
 
