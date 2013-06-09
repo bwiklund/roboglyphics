@@ -1,6 +1,8 @@
 (function() {
-  var Pen, Roboglypics, Vec,
+  var Pen, Roboglypics, Vec, _raf,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  _raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
 
   Vec = (function() {
 
@@ -133,7 +135,7 @@
       this.a = canvasEl.getContext('2d');
       this.canvasEl.width = this.canvasEl.offsetWidth;
       this.canvasEl.height = this.canvasEl.offsetHeight;
-      window.requestAnimationFrame(this.onRender);
+      _raf(this.onRender);
     }
 
     Roboglypics.prototype.reset = function() {
@@ -156,7 +158,7 @@
           this.pen.draw(this.a);
         }
       }
-      return window.requestAnimationFrame(this.onRender);
+      return _raf(this.onRender);
     };
 
     return Roboglypics;
