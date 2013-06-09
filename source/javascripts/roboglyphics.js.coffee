@@ -1,5 +1,7 @@
 # roboglyphics #
 
+_raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame
+
 class Vec
   constructor: (@x=0,@y=0) ->
   add: (o) -> 
@@ -103,7 +105,7 @@ class Roboglypics
     @a = canvasEl.getContext('2d')
     @canvasEl.width = @canvasEl.offsetWidth
     @canvasEl.height = @canvasEl.offsetHeight
-    window.requestAnimationFrame @onRender
+    _raf @onRender
 
   reset: ->
     @a.clearRect(0,0,@canvasEl.width,@canvasEl.height)
@@ -121,7 +123,7 @@ class Roboglypics
         break if @pen.done
         @pen.draw @a
 
-    window.requestAnimationFrame @onRender
+    _raf @onRender
 
 
 
