@@ -9,4 +9,4 @@ A library for creating procedural handwriting
 
 # Some examples:
 
-![Sample](https://raw.github.com/bwiklund/roboglyphics/master/site/textured.png)
+![Sample](https://raw.github.com/bwiklund/roboglyphics/master/site/textured.jpg)
