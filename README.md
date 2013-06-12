@@ -5,4 +5,8 @@ roboglyphics
 
 A library for creating procedural handwriting
 
-[See it in action](http://bwiklund.github.com/roboglyphics)
+[Try it out](http://bwiklund.github.com/roboglyphics)
+
+# Some examples:
+
+![Sample](https://raw.github.com/bwiklund/roboglyphics/master/site/textured.png)
